@@ -34,14 +34,18 @@ public class ServiceBusPublisher
 
             _logger.LogInformation("Creating SecretClient...");
 
-            var secretClient = new SecretClient(
-                new Uri(vaultUrl),
-                new DefaultAzureCredential());
+            var credential = new DefaultAzureCredential(
+            new DefaultAzureCredentialOptions
+            {
+                ManagedIdentityClientId =
+                    _configuration["ManagedIdentityClientId"]
+            });
+
+            var secretClient = new SecretClient(new Uri(vaultUrl), credential);
 
             _logger.LogInformation("Retrieving ServiceBusConnectionString secret...");
 
-            var secret = await secretClient.GetSecretAsync(
-                "ServiceBusConnectionString");
+            var secret = await secretClient.GetSecretAsync("ServiceBusConnectionString");
 
             _logger.LogInformation("Successfully retrieved secret from Key Vault.");
 
