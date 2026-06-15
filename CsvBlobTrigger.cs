@@ -41,7 +41,7 @@ public class CsvBlobTrigger
             {
                 var json = JsonSerializer.Serialize(record);
 
-                _logger.LogInformation("Sending: {Json}", json);
+                _logger.LogInformation($"Sending: {json}");
 
                 await _publisher.SendAsync(json);
 
