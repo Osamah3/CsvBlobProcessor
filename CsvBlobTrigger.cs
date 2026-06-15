@@ -37,9 +37,21 @@ public class CsvBlobTrigger
 
         foreach (var record in records)
         {
-            var json = JsonSerializer.Serialize(record);
+            try
+            {
+                var json = JsonSerializer.Serialize(record);
 
-            await _publisher.SendAsync(json);
+                _logger.LogInformation("Sending: {Json}", json);
+
+                await _publisher.SendAsync(json);
+
+                _logger.LogInformation("Successfully sent");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error sending Service Bus message");
+                throw;
+            }
         }
     }
 }
